@@ -12,12 +12,14 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/vendor/DataTables/css/datatables.min.css" rel="stylesheet">
     <link href="/static/css/custom.css" rel="stylesheet">
 
   </head>
 
   <body>
 
+    {% if session.logged_in %}
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
@@ -28,38 +30,39 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/">Registration
-              </a>
-            </li>
+            <a class="nav-link" href="/dashboard">Dashboard
+            </a>
+          </li>
             <li class="nav-item active">
-              <a class="nav-link" href="/use/voucher">Us Voucher
+              <a class="nav-link" href="/use/voucher">Use Voucher
                 <span class="sr-only">(current)</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/view/transactions">View Transactions</a>
+              <a class="nav-link" href="/view/transactions">View Transactions
+              </a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
-
-
-    <div class="container">
+     <!-- Vouchers -->
+    <div class="container" >
       <div class="row">
         <div class="col-lg-12">
 
           <div class="card-body">
             <h4 class="card-title">Consume Vouchers</h4>
-            <p class="card-text">CLick on the voucher corresponding to the value you want to redeem</p>
+            <p class="card-text">Click on the voucher corresponding to the value you want to redeem</p>
           </div>
 
         </div>
       </div>
     </div>
-
-    <!-- Vouchers -->
-    <div class="container">
+    <div class="container" >
       <div class="row">
         <div class="col-sm-3">
           <div class="card bg-light mb-3" style="max-width: 18rem;">
@@ -237,7 +240,7 @@
             <div class="card-body">
               <h5 class="card-title">500 HKD</h5>
               <p class="card-text">Redeem this voucher in exchange of goods of a maximum equivalent value of 500 dollars </p>
-              <a class="btn btn-primary" id="v17">Redeem</a>
+              <a class="btn btn-primary"  id="v17">Redeem</a>
             </div>
           </div>
         </div>
@@ -274,61 +277,7 @@
       </div>
     </div>
 
-    <div class="container alert alert-secondary">
-      <form id="transaction_form">
-
-        <div class="row">
-          <label class="col-sm-2">Sender Address:</label>
-          <div class="col-sm-10">
-            <input type="text" name="sender_address" id="sender_address" rows="2" class="form-control">
-
-          </div>
-        </div>
-
-        <br>
-
-        <div class="row">
-          <label class="col-sm-2">Sender Private Key:</label>
-          <div class="col-sm-10">
-            <input type="text" name="sender_private_key" id="sender_private_key" rows="2" class="form-control">
-          </div>
-        </div>
-
-        <br>
-
-        <div class="row">
-          <label class="col-sm-2">Recipient Address:</label>
-          <div class="col-sm-10">
-            <input type="text" name="recipient_address" id="recipient_address" rows="2" class="form-control">
-          </div>
-        </div>
-
-        <br>
-
-        <div class="row">
-          <label class="col-sm-2">Amount to Send:</label>
-          <div class="col-sm-10">
-            <input type="text" name="amount" id="amount" rows="2" class="form-control">
-          </div>
-        </div>
-
-        <br>
-
-        <div class="row">
-          <div class="col-lg-12 text-center">
-            <input type="button" id="generate_transaction" class="btn btn-primary btn-lg" value="Generate Transaction">
-          </div>
-        </div>
-
-        <br>
-
-    </form>
-    </div>
-
     <br>
-
-
-
     <!-- Modal -->
     <div class="modal modal-alert fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
       <div class="modal-dialog">
@@ -345,9 +294,9 @@
               <div class="form-group">
                 <label class="col-sm-12">Approved Operator:</label>
                 <select class="form-control" name="approved_operator" id="approved_operator">
-                  <option>Octopus</option>
-                  <option>PayMe</option>
-                  <option>AliPay</option>
+                  <option value="http://127.0.0.1:5001" selected="selected">Octopus</option>
+                  <option value="http://127.0.0.1:5002">PayMe</option>
+                  <option value="http://127.0.0.1:5003">AliPay</option>
                 </select>
               </div>
 
@@ -365,19 +314,14 @@
                 </div>
               </div>
 
+
               <div class="row">
-                <label class="col-sm-12">Transaction Signature:</label>
+                <label class="col-sm-12">Voucher</label>
                 <div class="col-sm-12">
-                  <input type="text" name="signature" id="transaction_signature" rows="2" class="form-control" readonly>
+                  <input type="text" name="voucher" id="confirmation_voucher" rows="2" class="form-control" readonly>
                 </div>
               </div>
 
-              <div class="row">
-                <label class="col-sm-12">Blockchain Node URL:</label>
-                <div class="col-sm-12">
-                  <input type="text" name="node_url" id="node_url" rows="2" class="form-control" value="http://127.0.0.1:5000">
-                </div>
-              </div>
 
             </form>
           </div>
@@ -417,32 +361,66 @@
       </div>
     </div>
 
+    <div class="modal modal-alert fade" id="fail_transaction_modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
 
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          </div>
+
+          <div class="modal-body">
+            <div class="alert alert-danger" role="alert">
+              <h4 class="alert-heading">Failed Transaction!</h4>
+              <p>The transaction could not be validated.</p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="button_confirm_transaction" class="btn btn-success" data-dismiss="modal">OK</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <!-- Bootstrap core JavaScript -->
     <script src="/static/vendor/jquery/jquery.min.js"></script>
     <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-
     <script>
+      var v_id;
 
       $(function () {
-          $("#generate_transaction").click(function () {
+          $("[id^=v]").click(function () {
+            console.log("CLICKKKKKK")
+            console.log(event.target.id)
+
+            v_id =  event.target.id.toString().substr(1)
+            console.log(v_id)
+
 
             $.ajax({
-              url: "/generate/transaction",
+              url: "/generate_initial/voucher",
               type: "POST",
               dataType : 'json',
-              data: $('#transaction_form').serialize(),
+              data: {voucher_number: v_id},
               success: function(response){
+                console.log("The initial voucher",response)
+                var voucher  = {
+                  voucher: response["voucher_data"],
+                  signature_client: response["signature_client"],
+                  signature_server: response["signature_server"]
+                }
 
-                document.getElementById("confirmation_sender_address").value = response["transaction"]["sender_address"];
-                document.getElementById("confirmation_recipient_address").value = response["transaction"]["recipient_address"];
-                document.getElementById("confirmation_amount").value = response["transaction"]["value"];
-                document.getElementById("transaction_signature").value = response["signature"];
+                // document.getElementById("approved_operator").value = response["registration"]["approved_operator"];
+                document.getElementById("confirmation_voucher_number").value = response["voucher_data"]["voucher_number"];
+                document.getElementById("confirmation_voucher_value").value = response["voucher_data"]["value"];
+                document.getElementById("confirmation_voucher").value = JSON.stringify(voucher);
+                // document.getElementById("applicant_public_key").value = response["public_key"];
 
                 $("#basicModal").modal('show');
-                
+
               },
               error: function(error){
                 console.log(error);
@@ -456,39 +434,73 @@
       $(function () {
           $("#button_confirm_transaction").click(function () {
             //console.log($('#confirmation_transaction_form').serialize());
-
+          console.log("The operator is",document.getElementById("approved_operator").value)
+            console.log("Vala",document.getElementById("confirmation_voucher").value)
 
             $.ajax({
-              url: document.getElementById("node_url").value + "/transactions/new",
+              url: "/generate/voucher",
               type: "POST",
-              headers: {'Access-Control-Allow-Origin':'*'},
               dataType : 'json',
-              data: $('#confirmation_transaction_form').serialize(),
+              data: {voucher_number: v_id},
               success: function(response){
+                console.log("The finalized voucher",response)
+                $.ajax({
+                  url: document.getElementById("approved_operator").value + "/confirm/voucher",
+                  type: "POST",
+                  headers: {'Access-Control-Allow-Origin':'*'},
+                  dataType : 'json',
+                  data: response,//document.getElementById("confirmation_voucher").value.,
+                  success: function(response){
+                    console.log("The voucher has been approved",response)
 
-                //reset both forms
-                $("#transaction_form")[0].reset();
-                $("#confirmation_transaction_form")[0].reset();
-                
-                //clean text boxes
-                $("#sender_address").val("");
-                $("#sender_private_key").val("");
-                $("#recipient_address").val("");
-                $("#amount").val("");
+                    // //reset both forms
+                    // $("#transaction_form")[0].reset();
+                    // $("#confirmation_transaction_form")[0].reset();
+                    //
+                    // //clean text boxes
+                    // $("#confirmation_voucher_number").val("");
+                    // $("#confirmation_voucher_value").val("");
+                    // $("#confirmation_voucher").val("");
 
-                $("#basicModal").modal('hide');
-                $("#success_transaction_modal").modal('show');
-                
+
+                    $("#basicModal").modal('hide');
+                    $("#success_transaction_modal").modal('show');
+
+                  },
+                  error: function(error){
+                    $("#basicModal").modal('hide');
+                    $("#fail_transaction_modal").modal('show');
+                    console.log(error);
+                  }
+               });
+
               },
               error: function(error){
                 console.log(error);
               }
             });
 
+
           });
       });
 
     </script>
+
+    {% else %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card-body">
+            <p class="card-text">Unauthorized access, you must be logged in the system to view this page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+
+
 
 
   </body>

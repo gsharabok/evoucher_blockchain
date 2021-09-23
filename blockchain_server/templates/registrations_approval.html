@@ -34,12 +34,12 @@
                 <span class="sr-only">(current)</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/configure">Configure</a>
-            </li>
-            <li class="nav-item ">
-              <a class="nav-link" href="/transaction">Transactions Administration</a>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              <a class="nav-link" href="/configure">Configure</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item ">-->
+<!--              <a class="nav-link" href="/transaction">Transactions Administration</a>-->
+<!--            </li>-->
           </ul>
         </div>
       </div>
@@ -105,8 +105,9 @@
 
 
     <script>
+      var address_sentVouchers = [];
+      console.log("values of add",address_sentVouchers)
       $(function(){
-
         $.ajax({
           url: "/applications/get",
           type: 'GET',
@@ -173,9 +174,10 @@
         $.ajax({
           url: "/chain",
           type: 'GET',
+          // headers: {'Access-Control-Allow-Origin':'*'},
           success: function(response){
 
-            console.log(response);
+            console.log("Entered chain", response);
             //Generate transactions Table
             var transactions = [];
             count = 1;
@@ -191,78 +193,139 @@
                 application = [count,
                               response["chain"][i]["transactions"][j]["sender_public_key"],
                               response["chain"][i]["transactions"][j]["receiver_public_key"],
+                              response["chain"][i]["transactions"][j]["sender_address"],
+                              response["chain"][i]["transactions"][j]["receiver_address"],
                               response["chain"][i]["transactions"][j]["voucher_number"],
                               response["chain"][i]["transactions"][j]["value"],
                               formattedDateTime,
                               response["chain"][i]["block_number"]];
                 transactions.push(application);
-
                 count += 1;
+
+                // console.log(response.length)
+                // console.log(response["chain"][i]["transactions"].length)
+
+                // Send the chain to the registration page
+                if (response["chain"][i]["transactions"].length > 1) {
+                  var voucer_num = response["chain"][i]["transactions"][j]["voucher_number"]
+                  var addr = response["chain"][i]["transactions"][j]["sender_public_key"]
+                  if (!(address_sentVouchers.includes(addr))) {
+                    if (voucer_num > 0) {
+                      console.log('j is', j)
+                      console.log("vouch is",voucer_num)
+                      console.log("The url is", response["chain"][i]["transactions"][j]["sender_address"] + '/receive/enc_vouchers')
+                      // console.log("the signa is ",response["chain"][i]["transactions"][j]["signature"])
+                      // console.log("the response is",response)
+                      $.ajax({
+                        url: response["chain"][i]["transactions"][j]["sender_address"] + '/receive/chain',  // send to applicant address
+                        type: "POST",
+                        headers: {'Access-Control-Allow-Origin': '*'},
+                        dataType: 'json',
+                        data: {
+                          chain: response["chain"],
+                        },
+                        success: function (response) {
+                          console.log('The chain response is here', response)
+
+                        },
+                        error: function (error) {
+                          console.log(error);
+                        }
+                      });
+
+                      // Send each voucher
+                      $.ajax({
+                        url: response["chain"][i]["transactions"][j]["sender_address"] + '/receive/enc_vouchers',  // send to applicant address
+                        type: "POST",
+                        headers: {'Access-Control-Allow-Origin': '*'},
+                        dataType: 'json',
+                        data: {
+                          sender_public_key: response["chain"][i]["transactions"][j]["sender_public_key"],
+                          receiver_public_key: response["chain"][i]["transactions"][j]["receiver_public_key"],
+                          sender_address: response["chain"][i]["transactions"][j]["sender_address"],
+                          receiver_address: response["chain"][i]["transactions"][j]["receiver_address"],
+                          voucher_number: response["chain"][i]["transactions"][j]["voucher_number"],
+                          value: response["chain"][i]["transactions"][j]["value"],
+                          signature: response["chain"][i]["transactions"][j]["signature"]
+                        },
+                        success: function (response) {
+                          console.log('The encrypted vouchers have been sent', response)
+                        },
+                        error: function (error) {
+                          console.log("NOPE", error);
+                        }
+                      });
+                      if (voucer_num === '20') {
+                        address_sentVouchers.push(response["chain"][i]["transactions"][j]["sender_public_key"])
+                        console.log("Addresses who obtained vouchers", response["chain"][i]["transactions"][j]["sender_address"])
+                      }else{
+                        console.log("No voucher is ",voucer_num)
+                      }
+
+                    }
+                  }
+                }
+
+
               };
             };
-
             // Restrict a column to 10 characters, do split words
               $('#transactions_table').dataTable( {
                 data: transactions,
                 columns: [{ title: "#" },
                           { title: "Sender Public_Key"},
                           { title: "Receiver Public_Key"},
+                          { title: "Sender Address"},
+                          { title: "Receiver Address"},
                           { title: "Voucher Number"},
                           { title: "Value"},
                           { title: "Timestamp"},
                           { title: 'Block'}],
-                columnDefs: [ {targets: [1,2,3,4,5,6], render: $.fn.dataTable.render.ellipsis( 25 )}]
+                columnDefs: [ {targets: [1,2,3,4,5,6,7,8], render: $.fn.dataTable.render.ellipsis( 25 )}]
               } );
+
 
           },
           error: function(error){
             console.log(error);
           }
+
         });
 
         $("#approve_button").click(function () {
 
-          // $.ajax({
-          //   url: "Url of vouchers confirmation",
-          //   type: "POST",
-          //   d
-          //   success: function(response){
-          //     console.log('The response',response)
-          //     // if (response[""])
-          //     count = 1;
-          //     for (i = 0; i < response.length; i++) {
-          //       for (j = 0; j < response["chain"][i]["transactions"].length; j++) {
-          //          $.ajax({
-          //             url: response["chain"][i]["transactions"][j]["sender_address"] + "/confirmed/new",
-          //             type: "POST",
-          //             headers: {'Access-Control-Allow-Origin':'*'},
-          //             dataType : 'json',
-          //             data: response["chain"][i]["message"][j],
-          //             success: function(response){
-          //
-          //             },
-          //             error: function(error){
-          //               console.log(error);
-          //             }
-          //          });
-          //
-          //       };
-          //   };
-          //
-          //
-          //
-          //     window.location.reload();
-          //
-          //   },
-          //   error: function(error){
-          //     console.log(error);
-          //   }
-          // });
 
           $.ajax({
             url: "/approve_registration",
             type: "GET",
             success: function(response){
+              console.log("Returned ",response)
+              console.log("length",response.length)
+
+              if (response["message"] !== "Empty") {
+                console.log("212", response["transactions"].length)
+                console.log("2122", response["transactions"][0])
+
+                for (j = 0; j < response["transactions"].length; j++) {
+                  var recpub = response["transactions"][j]["receiver_public_key"];
+                  if (recpub === "") {
+                    console.log("The original", response["transactions"][j])
+                    console.log("The sent", response["transactions"][j]["sender_address"] + "allow/vouchers")
+                    $.ajax({
+                      url: response["transactions"][j]["sender_address"] + "/allow/vouchers",
+                      type: 'POST',
+                      data: {approved_hkid: response["transactions"][j]["applicant_hkid"]},
+                      // headers: {'Access-Control-Allow-Origin':'*'},
+                      success: function (response) {
+
+                      },error: function (error) {
+                        console.log(error);
+                      }
+                    });
+                  }
+                }
+
+              }
 
               window.location.reload()
 

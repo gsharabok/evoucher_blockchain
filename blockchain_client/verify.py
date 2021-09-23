@@ -57,6 +57,8 @@ BasicInfo = {
     "default": "not in our database."
 }
 
+import re
+
 
 def determine_divisor(hkid):
     # Check if the value entered by user is vaild
@@ -74,15 +76,19 @@ def determine_divisor(hkid):
             hkid = "0" + hkid
             divisor = 11
         else:
-            raise ValueError("Number of characters of HKID should be 7 to 9.")
+            return False, False, False
+            #raise ValueError("Number of characters of HKID should be 7 to 9.")
     else:
-        raise ValueError("Number of characters of HKID should be 7 to 9.")
+        return False, False, False
+        #raise ValueError("Number of characters of HKID should be 7 to 9.")
 
     return divisor, hkid, length
 
 
 def letter_to_number(hkid):
     divisor, hkid, length = determine_divisor(hkid)
+    if divisor == False:
+        return False, False, False
 
     # Convert character to ASCII code
     letterASCII_1 = ord(hkid[0])
@@ -103,7 +109,8 @@ def letter_to_number(hkid):
         converted_2 = letterASCII_2 - 64
         return [converted_1, converted_2], divisor, hkid
     else:
-        raise ValueError("First character of HKID should be contain A-Z only.")
+        return False, False, False
+        #raise ValueError("First character of HKID should be contain A-Z only.")
 
 
 def cal_check(remainder):
@@ -123,6 +130,8 @@ def cal_check(remainder):
 
 
 def cal_remainder(converted, divisor, hkid):
+    if not hkid[5].isdigit() and not hkid[6].isdigit():
+        return False
     # Calculate product and sum of user inputted ID Card number
     productNsum = converted[0] * 9 + converted[1] * 8 + int(hkid[2]) * 7 + int(hkid[3]) * 6 + int(hkid[4]) * 5 + int(
         hkid[5]) * 4 + int(hkid[6]) * 3 + int(hkid[7]) * 2
@@ -142,11 +151,18 @@ def calculate(hkid):
     return str(check[0])
 
 
-def verify(hkid):
+#@app.route('/reg')
+def verify(hkid): # hkid
+
     # Check if the value inputted by user is a vaild and if the value consist 8 character, do the following
     converted, divisor, hkid = letter_to_number(hkid)
 
+    if converted == False:
+        return False
+
     remainder = cal_remainder(converted, divisor, hkid)
+    if remainder == False:
+        return False
 
     check = cal_check(remainder)
     if hkid[-1] == str(check[0]) or hkid[-1] == str(check[1]):
@@ -158,6 +174,21 @@ def verify(hkid):
     # type = BasicInfo["default"];
     # if(hkid[0] + hkid[1]) in BasicInfo:
     # type = BasicInfo[hkid[0] + hkid[1]];
+
+
+
+regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$' 
+def check(email):
+    if(re.search(regex, email)):
+        return True
+    else:
+        return False
+
+def check_name(name, surname):
+    if name.isalpha() and name != "" and surname.isalpha() and surname != "":
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":

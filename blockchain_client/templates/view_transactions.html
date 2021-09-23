@@ -20,6 +20,8 @@
   <body>
 
     <!-- Navigation -->
+   {% if session.logged_in %}
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
         <a class="navbar-brand" href="#">Blockchain Client</a>
@@ -29,16 +31,21 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/">Registration
-              </a>
-            </li>
+            <a class="nav-link" href="/dashboard">Dashboard
+            </a>
+          </li>
             <li class="nav-item">
-              <a class="nav-link" href="/make/transaction">Make Transaction</a>
+              <a class="nav-link" href="/use/voucher">Use Voucher
+
+              </a>
             </li>
             <li class="nav-item active">
               <a class="nav-link" href="/view/transactions">View Transactions
-                <span class="sr-only">(current)</span>
+              <span class="sr-only">(current)</span>
               </a>
+          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>
         </div>
@@ -53,31 +60,31 @@
 
           <div class="card-body">
             <h4 class="card-title">View Transactions</h4>
-            <p class="card-text">Enter a blockchain node URL and click on "View Transactions" button to check all transactions</p>
+            <p class="card-text">The following are the transactions you effectuated</p>
           </div>
 
         </div>
       </div>
     </div>
 
-    <div class="container alert alert-secondary">
+<!--    <div class="container alert alert-secondary">-->
 
-        <div class="row">
-          <label class="col-sm-2">Node URL:</label>
-          <div class="col-sm-10">
-            <textarea id="node_url" rows="1" class="form-control">http://127.0.0.1:5000</textarea>
-          </div>
-        </div>
+<!--        <div class="row">-->
+<!--          <label class="col-sm-2">Node URL:</label>-->
+<!--          <div class="col-sm-10">-->
+<!--            <textarea id="node_url" rows="1" class="form-control">http://127.0.0.1:5000</textarea>-->
+<!--          </div>-->
+<!--        </div>-->
 
-        <br>
+<!--        <br>-->
 
-        <div class="row">
-          <div class="col-lg-12 text-center">
-            <input type="button" id="view_transactions" class="btn btn-primary btn-lg" value="View Transactions">
-          </div>
-        </div>
+<!--        <div class="row">-->
+<!--          <div class="col-lg-12 text-center">-->
+<!--            <input type="button" id="view_transactions" class="btn btn-primary btn-lg" value="View Transactions">-->
+<!--          </div>-->
+<!--        </div>-->
 
-    </div>
+<!--    </div>-->
 
     <br>
     <!-- Blockchain Transactions Table -->
@@ -93,13 +100,12 @@
     <script type="text/javascript" src="/static/vendor/DataTables/js/datatables.min.js"></script>
     <script src="/static/vendor/DataTables/js/ellipsis.js"></script>
 
-
     <script>
 
       $(function(){
 
         $.ajax({
-          url: document.getElementById("node_url").value + "/chain",
+          url: "http://127.0.0.1:5000" + "/chain",
           type: 'GET',
           success: function(response){
 
@@ -110,22 +116,33 @@
 
             for (i = 0; i < response.length; i++) {
               for (j = 0; j < response["chain"][i]["transactions"].length; j++) {
+                  var trimed_url =  window.location.href.substring(window.location.href.indexOf('v')-1,0);
+                  console.log("Trimmed",trimed_url)
+                  if (response["chain"][i]["transactions"][j]["receiver_address"] === trimed_url) {
+                      //format date
+                      var options = {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit"
+                      };
+                      var date = new Date(response["chain"][i]["timestamp"] * 1000);
+                      var formattedDateTime = date.toLocaleTimeString("en-us", options);
 
-                //format date
-                var options = {  year: "numeric", month: "short",  day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"  };
-                var date = new Date(response["chain"][i]["timestamp"] * 1000);
-                var formattedDateTime = date.toLocaleTimeString("en-us", options);
+                      application = [count,
+                          response["chain"][i]["transactions"][j]["sender_public_key"],
+                          response["chain"][i]["transactions"][j]["receiver_public_key"],
+                          response["chain"][i]["transactions"][j]["voucher_number"],
+                          response["chain"][i]["transactions"][j]["value"],
+                          formattedDateTime,
+                          response["chain"][i]["block_number"]];
+                      transactions.push(application);
 
-                application = [count,
-                              response["chain"][i]["transactions"][j]["sender_public_key"],
-                              response["chain"][i]["transactions"][j]["receiver_public_key"],
-                              response["chain"][i]["transactions"][j]["voucher_number"],
-                              response["chain"][i]["transactions"][j]["value"],
-                              formattedDateTime,
-                              response["chain"][i]["block_number"]];
-                transactions.push(application);
+                      count += 1;
+                  }
 
-                count += 1;
               };
             };
 
@@ -142,12 +159,29 @@
                 columnDefs: [ {targets: [1,2,3,4,5,6], render: $.fn.dataTable.render.ellipsis( 25 )}]
               } );
 
+              $.ajax({
+                      url: window.location.href + '/receive/chain',  // send to applicant address
+                      type: "POST",
+                      headers: {'Access-Control-Allow-Origin': '*'},
+                      dataType: 'json',
+                      data: {
+                        chain: response["chain"][i],
+                      },
+                      success: function (response) {
+                        console.log('The chain response is heree', response)
+
+                      },
+                      error: function (error) {
+                        console.log(error);
+                      }
+                });
+
           },
           error: function(error){
             console.log(error);
           }
         });
-        
+
         // $('#view_transactions').click(function(){
         //
         //   $.ajax({
@@ -206,6 +240,26 @@
 
 
     </script>
+
+
+    {% else %}
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card-body">
+            <p class="card-text">Unauthorized access, you must be logged in the system to view this page.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+
+
+
 
 
 

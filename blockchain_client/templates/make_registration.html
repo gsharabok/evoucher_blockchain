@@ -7,12 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>Blockchain Client</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/custom.css" rel="stylesheet">
+
+
 
   </head>
 
@@ -33,11 +36,14 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/use/voucher">Use Voucher</a>
+              <a class="nav-link" href="/login">Login</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/view/transactions">View Transactions</a>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              <a class="nav-link" href="/use/voucher">Use Voucher</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--              <a class="nav-link" href="/view/transactions">View Transactions</a>-->
+<!--            </li>-->
           </ul>
         </div>
       </div>
@@ -61,12 +67,11 @@
 
     <!-- Registration -->
     <div class="container alert alert-secondary">
-    <form id="registration_form">
-        
+      <form id="registration_form" >
         <div class="row">
           <label class="col-sm-2">First Name:</label>
           <div class="col-sm-10">
-            <input type="text" name="applicant_first_name" id="applicant_first_name" rows="2" class="form-control">
+            <input type="text" name="applicant_first_name" id="applicant_first_name" class="form-control" required  maxlength="100"/>
           </div>
         </div>
         <br>
@@ -74,7 +79,7 @@
         <div class="row">
           <label class="col-sm-2">Last Name:</label>
           <div class="col-sm-10">
-            <input type="text" name="applicant_last_name" id="applicant_last_name" rows="2" class="form-control">
+            <input type="text" name="applicant_last_name" id="applicant_last_name" rows="2" class="form-control" required maxlength="100" >
           </div>
         </div>
         <br>
@@ -83,7 +88,7 @@
         <div class="row">
           <label class="col-sm-2">HKID:</label>
           <div class="col-sm-10">
-            <input type="text" name="applicant_hkid" id="applicant_hkid" rows="2" class="form-control">
+            <input type="text" name="applicant_hkid" id="applicant_hkid" rows="2" class="form-control" required minlength="7" maxlength="9">
           </div>
         </div>
         <br>
@@ -91,19 +96,29 @@
         <div class="row">
           <label class="col-sm-2">Email:</label>
           <div class="col-sm-10">
-            <input type="text" name="applicant_email" id="applicant_email" rows="2" class="form-control">
+            <input type="text" name="applicant_email" id="applicant_email" rows="2" class="form-control"
+                   required minlength="3" maxlength="100">
           </div>
         </div>
+        <br>
+
+      <div class="row">
+          <label class="col-sm-2">Password:</label>
+          <div class="col-sm-10">
+            <input type="password" name="applicant_password" id="applicant_password" rows="2" class="form-control"
+                   required >
+            </div>
+      </div>
         <br>
         
         <div class="row">
           <div class="col-lg-12 text-center">
-            <input type="button" id="generate_registration" class="btn btn-primary btn-lg" value="Submit">
+            <input type="button" id="generate_registration"
+                   class="btn btn-primary btn-lg" value="Submit">
           </div>
         </div>
 
         <br>
-
     </form>
     </div>
 
@@ -126,21 +141,21 @@
                 <div class="row">
                   <label class="col-sm-12">First name:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="applicant_first_name" id="confirmation_applicant_first_name" rows="2" class="form-control" >
+                    <input type="text" name="applicant_first_name" id="confirmation_applicant_first_name" rows="2" class="form-control" readonly>
                   </div>
                 </div>
                 
                 <div class="row">
                   <label class="col-sm-12">Last name:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="applicant_last_name" id="confirmation_applicant_last_name" rows="2" class="form-control" >
+                    <input type="text" name="applicant_last_name" id="confirmation_applicant_last_name" rows="2" class="form-control" readonly>
                   </div>
                 </div>
 
                 <div class="row">
                   <label class="col-sm-2">HKID:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="applicant_hkid" id="confirmation_applicant_hkid" rows="2" class="form-control">
+                    <input type="text" name="applicant_hkid" id="confirmation_applicant_hkid" rows="2" class="form-control" readonly>
                   </div>
                 </div>
                 <br>
@@ -148,36 +163,36 @@
                 <div class="row">
                   <label class="col-sm-2">Email:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="applicant_email" id="confirmation_applicant_email" rows="2" class="form-control">
+                    <input type="text" name="applicant_email" id="confirmation_applicant_email" rows="2" class="form-control" readonly>
                   </div>
                 </div>
                 <br>
 
-              <div class="row">
+              <div class="row" hidden>
                   <label class="col-sm-12">Public Key:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="applicant_public_key" id="applicant_public_key" rows="2" class="form-control" readonly>
+                    <input type="text" name="applicant_public_key" id="applicant_public_key" rows="2" class="form-control" readonly >
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row" hidden>
                   <label class="col-sm-12">Transaction Signature:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="signature" id="transaction_signature" rows="2" class="form-control" readonly>
+                    <input type="text" name="signature" id="transaction_signature" rows="2" class="form-control" readonly >
                   </div>
                 </div>
 
-                <div class="row">
+                <div class="row" hidden>
                   <label class="col-sm-12">Sender address:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="sender_address" id="sender_address" rows="2" class="form-control" readonly>
+                    <input type="text" name="sender_address" id="sender_address" rows="2" class="form-control" readonly >
                   </div>
                 </div>
 
-                 <div class="row">
+                 <div class="row" hidden>
                   <label class="col-sm-12">Blockchain address:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="receiver_address" id="receiver_address" rows="2" class="form-control" readonly>
+                    <input type="text" name="receiver_address" id="receiver_address" rows="2" class="form-control" readonly >
                   </div>
                 </div>
 
@@ -223,23 +238,80 @@
     </div>
 
 
-
+    <!-- SCRIPTS -->
     <!-- Bootstrap core JavaScript -->
     <script src="/static/vendor/jquery/jquery.min.js"></script>
     <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/jquery.validate.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/additional-methods.js"></script>
 
     <script>
+      $(document).ready(function () {
+        $.validator.addMethod("pwcheck", function(value) {
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(value)
+        });
+        $.validator.addMethod("emailcheck", function(value) {
+          return /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(value);
+        });
+        $('#registration_form').validate({
+          messages: {
+            applicant_first_name: {
+              required: "Please fill in this field",
+            },
+            applicant_last_name: {
+              required: "Please fill in this field",
+            },
+            applicant_hkid: {
+              required: "Please fill in this field",
+              rangelength: "Please enter at least 7 characters."
+            },
+            applicant_email: {
+              required: "Please fill in this field",
+              rangelength: "Please enter at least 3 characters.",
+              emailcheck: "Must contain '@' followed by valid domain name "
+            },
+            applicant_password: {
+              required: "Please fill in this field",
+              rangelength: "Please enter at least 8 characters.",
+              pwcheck: "Must contain at least one uppercase and lowercase letter, one digit, one special character(!@#$%^&*)."
 
-      $(function () {
-          $("#generate_registration").click(function () {
+            }
+          },
+          rules: {
+            applicant_first_name: {
+              required: true,
+              rangelength: [1, 100]
+            },
+            applicant_last_name: {
+              required: true,
+              rangelength: [1, 100]
+            },
+            applicant_hkid: {
+              required: true,
+              rangelength: [7, 10]
+            },
+            applicant_email: {
+              required: true,
+              rangelength: [3, 100],
+              emailcheck: true,
+            },
+            applicant_password: {
+              required: true,
+              rangelength: [8, 100],
+              pwcheck: true,
+            }
+          }
+        })
 
+        $("#generate_registration").click(function () {
+          if ($("#registration_form").valid()) {
+            console.log("VALID input")
             $.ajax({
               url: "/generate/registration",
               type: "POST",
-              dataType : 'json',
-              data: $('#registration_form').serialize(),
-              success: function(response){
+              dataType: 'json',
+              data: $("#registration_form").serialize(),
+              success: function (response) {
 
                 document.getElementById("confirmation_applicant_first_name").value = response["registration"]["applicant_first_name"];
                 document.getElementById("confirmation_applicant_last_name").value = response["registration"]["applicant_last_name"];
@@ -252,16 +324,22 @@
                 // document.getElementById("confirmation_amount").value = response["registration"]["value"];
 
                 $("#basicModal").modal('show');
-                
+
               },
-              error: function(error){
+              error: function (error) {
                 console.log(error);
               }
             });
 
-          });
-      });
+          } else {
+            console.log("input is invalid")
+          }
+          console.log("Made it inside");
 
+        });
+
+
+      });
 
       $(function () {
           $("#button_confirm_application").click(function () {
@@ -290,6 +368,19 @@
 
                 $("#basicModal").modal('hide');
                 $("#success_registration_modal").modal('show');
+                console.log(window.location.href+"login")
+                window.location.replace(window.location.href+"login")
+                $.ajax({
+                  url: "/login",
+                  type: "GET",
+                  success: function (response) {
+                    console.log("Moved to login page")
+
+                  },
+                  error: function (error) {
+                    console.log(error);
+                  }
+                });
                 
               },
               error: function(error){
@@ -300,6 +391,70 @@
           });
       });
 
+       // $("#generate_registration").submit(function (e) {
+          //   // e.preventDefault();
+          //   // var form = $(this)
+          //   // console.log("FOrm is",form)
+          //   $.ajax({
+          //     url: "/generate/registration",
+          //     type: "POST",
+          //     dataType : 'json',
+          //     data: form.serialize(),
+          //     success: function(response){
+          //
+          //       document.getElementById("confirmation_applicant_first_name").value = response["registration"]["applicant_first_name"];
+          //       document.getElementById("confirmation_applicant_last_name").value = response["registration"]["applicant_last_name"];
+          //       document.getElementById("confirmation_applicant_hkid").value = response["registration"]["applicant_hkid"]
+          //       document.getElementById("confirmation_applicant_email").value = response["registration"]["applicant_email"]
+          //       document.getElementById("applicant_public_key").value = response["public_key"];
+          //       document.getElementById("transaction_signature").value = response["signature"];
+          //       document.getElementById("sender_address").value = response["sender_address"];
+          //       document.getElementById("receiver_address").value = response["receiver_address"];
+          //       // document.getElementById("confirmation_amount").value = response["registration"]["value"];
+          //
+          //       $("#basicModal").modal('show');
+          //
+          //     },
+          //     error: function(error){
+          //       console.log(error);
+          //     }
+          //   });
+          //
+          //    // $('#registration_form').validate({
+          //    //   rules:{
+          //    //     applicant_first_name: {
+          //    //       required: true,
+          //    //       rangelength: [1, 100]
+          //    //     },
+          //    //     applicant_last_name: {
+          //    //       required: true,
+          //    //       rangelength: [1, 100]
+          //    //     },
+          //    //     applicant_hkid: {
+          //    //       required: true,
+          //    //       rangelength: [7, 10]
+          //    //     },
+          //    //     applicant_email: {
+          //    //       required: true,
+          //    //       rangelength: [3, 100]
+          //    //     },
+          //    //     applicant_password: {
+          //    //       required: true,
+          //    //       rangelength: [8, 100],
+          //    //     }
+          //    //   }
+          //    // }).form();
+          //   // if ($("#registration_form").valid()){
+          //   //   console.log("VALID input")
+          //   //
+          //   //
+          //   // }
+          //   // else{
+          //   //   console.log("input is invalid")
+          //   // }
+          //
+          //
+          // });
     </script>
 
 
