@@ -9,11 +9,11 @@ paper-based voucher.
 
 ## System Design
 <p align="center">
-  <img src="img/system_design.png" alt="Logo" width="650" height="400">
+  <img src="img/system_design.png" alt="Logo" width="600" height="400">
 </p>
 The system is based on blockchain, a system in which a record or a ledger of a transaction
 made in cryptocurrency are maintained across several computers that are linked in a
-peer-to-peer network. <br />
+peer-to-peer network. <br /> <br />
 A blockchain has these following characteristics that covers the security requirements: <br />
 - Immutable: The blockchain only supports add operation, transaction cannot be
 deleted or modified in any way, making all transaction immutable <br />
