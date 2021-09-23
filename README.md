@@ -9,24 +9,24 @@ paper-based voucher.
 
 ## System Design
 <p align="center">
-  <img src="img/system_design.png" alt="Logo" width="700" height="400">
+  <img src="img/system_design.png" alt="Logo" width="650" height="400">
 </p>
 The system is based on blockchain, a system in which a record or a ledger of a transaction
 made in cryptocurrency are maintained across several computers that are linked in a
 peer-to-peer network. <br />
-A blockchain has these following characteristics that covers the security requirements:
+A blockchain has these following characteristics that covers the security requirements: <br />
 - Immutable: The blockchain only supports add operation, transaction cannot be
-deleted or modified in any way, making all transaction immutable
+deleted or modified in any way, making all transaction immutable <br />
 - Distributed: The ledger or the record of the transactions are replicated across
 computers rather than being stored in a centralized servers, any computer with
-internet access can download the blockchains
+internet access can download the blockchain. <br />
 - Uses Proof of Work (PoW): Some special users, also known as miners will compete
 with each other in order to solve a cryptographic puzzle that will give them the rights
 to add themselves in the blockchain ledger. This PoW helps to make the system more
-secure with the non-repudiation properties.
+secure with the non-repudiation properties. <br />
 - Cryptographic: Cryptography is used to verify whether or not the user has the bitcoin
 that they are trying to send, and to manage how the transactions are added to the
-bitcoin ledgers.
+bitcoin ledgers. <br />
 
 
 ## Research
