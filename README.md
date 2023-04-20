@@ -7,11 +7,6 @@ consortium blockchain to build a secure e-voucher system as an alternative for i
 paper-based voucher.
 <br />
 
-## Demo
-<div style="display:block;margin:auto;height:80%;width:80%">
-  <img src="img/blockchain-simulation.gif">
-</div>
-
 ## System Design
 <p align="center">
   <img src="img/system_design.png" alt="Logo" width="600" height="400">
