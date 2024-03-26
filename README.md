@@ -2,8 +2,8 @@
 Issuing vouchers is an alternative means to implement social welfare. While
 paper-based voucher is a working method, it is susceptible to some security issues such as
 counterfeiting, reproducing, and their relatively low effectiveness. This project explores how
-to implement necessary security methods with encryption and cryptography in form of a
-consortium blockchain to build a secure e-voucher system as an alternative for its traditional
+to implement necessary security methods with encryption and cryptography in the form of a
+consortium blockchain to build a secure e-voucher system as an alternative to its traditional
 paper-based voucher.
 <br />
 
@@ -12,20 +12,20 @@ paper-based voucher.
   <img src="img/system_design.png" alt="Logo" width="600" height="400">
 </p>
 The system is based on blockchain, a system in which a record or a ledger of a transaction
-made in cryptocurrency are maintained across several computers that are linked in a
+made in cryptocurrency is maintained across several computers that are linked in a
 peer-to-peer network. <br /> <br />
-A blockchain has these following characteristics that covers the security requirements: <br />
-- Immutable: The blockchain only supports add operation, transaction cannot be
-deleted or modified in any way, making all transaction immutable <br />
-- Distributed: The ledger or the record of the transactions are replicated across
-computers rather than being stored in a centralized servers, any computer with
+A blockchain has the following characteristics that cover the security requirements: <br />
+- Immutable: The blockchain only supports add operation, transactions cannot be
+deleted or modified in any way, making all transactions immutable <br />
+- Distributed: The ledger or the record of the transactions is replicated across
+computers rather than being stored in a centralized server, any computer with
 internet access can download the blockchain. <br />
 - Uses Proof of Work (PoW): Some special users, also known as miners will compete
 with each other in order to solve a cryptographic puzzle that will give them the rights
-to add themselves in the blockchain ledger. This PoW helps to make the system more
+to add themselves to the blockchain ledger. This PoW helps to make the system more
 secure with the non-repudiation properties. <br />
 - Cryptographic: Cryptography is used to verify whether or not the user has the bitcoin
-that they are trying to send, and to manage how the transactions are added to the
+that they are trying to send and to manage how the transactions are added to the
 bitcoin ledgers. <br />
 
 
